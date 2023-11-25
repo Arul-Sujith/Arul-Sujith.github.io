@@ -34,11 +34,7 @@ function generateSandDelta() {
 }
 
 function keys(m_key, plainText) {
-    //const m_key = "ff ee dd cc bb aa 99 88 77 66 55 44 33 22 11 00".replace(/ /g, "");
-    //const plainText = "00 11 22 33 44 55 66 77".replace(/ /g, "");
-    //const m_key = document.getElementById('masterKey').value.replace(/ /g, "");
     const byteValues = Array.from({ length: m_key.length / 2 }, (_, i) => m_key.slice(i * 2, (i + 1) * 2));
-    //const plainText = document.getElementById('plainText').value.replace(/ /g, "");
     const byteValuesPT = Array.from({ length: plainText.length / 2 }, (_, i) => plainText.slice(i * 2, (i + 1) * 2));
     const mkValues = [];
     const wkValues = [];
@@ -141,33 +137,13 @@ function final_transformation(cipher_values, wk_values) {
 
     cipher_values = cipher_values.reverse();
     cipher_values.push(['X33,0', x0], ['X33,1', cipher_values[257][1]], ['X33,2', x2], ['X33,3', cipher_values[259][1]], ['X33,4', x4], ['X33,5', cipher_values[261][1]], ['X33,6', x6], ['X33,7', cipher_values[263][1]]);
-
-    //const encryptedText = cipher_values[263][1] + " " + cipher_values[262][1] + " " + cipher_values[261][1] + " " + cipher_values[260][1] + " " + cipher_values[259][1] + " " + cipher_values[258][1] + " " + cipher_values[257][1] + " " + cipher_values[256][1]
-    //console.log(encryptedText)
-    //document.getElementById('cipherTextOutput').innerHTML = "<p>Cipher Text: " + encryptedText + "</p>";
+    
     return cipher_values;
 }
 
-
-//const δ_values = generateSandDelta();
-//const { mkValues, wkValues, ptValues } = keys();
-//const MK_Values = mkValues.map(mk => parseInt(mk[1], 16));
-//const SKValues = generateSK(MK_Values, δ_values);
-//const cipherValues1 = initialTransformation(ptValues, wkValues);
-//const cipherValues2 = encryption(cipherValues1, SKValues);
-//const cipherValues3 = final_transformation(cipherValues2, wkValues);
-//console.log("\nCipher Text: ", cipherValues3[263][1],cipherValues3[262][1],cipherValues3[261][1],cipherValues3[260][1],cipherValues3[259][1],cipherValues3[258][1],cipherValues3[257][1],cipherValues3[256][1])
-
-
 function getInputAndRunFunctions() {
-    //var userInput = document.getElementById("myInput").value;
     const m_key = document.getElementById('masterKey').value.replace(/ /g, "");
-    //console.log("m_key = ",m_key)
-
     const plainText = document.getElementById('plainText').value.replace(/ /g, "");
-    //console.log("plainText = ",plainText)
-
-    // Call functions with user input
     const δ_values = generateSandDelta();
     const { mkValues, wkValues, ptValues } = keys(m_key, plainText);
     const MK_Values = mkValues.map(mk => parseInt(mk[1], 16));
@@ -176,15 +152,11 @@ function getInputAndRunFunctions() {
     const cipherValues2 = encryption(cipherValues1, SKValues);
     const cipherValues3 = final_transformation(cipherValues2, wkValues);
 
-    // ... continue with the rest of your code ...
     displayCipherText(cipherValues3);
 }
 
 function displayCipherText(cipher_values) {
-    //console.log("cipher_values = ",JSON.stringify(cipher_values, null, 2))
-    //console.log("cipher = ",cipher_values.length)
     const encryptedText = cipher_values[271][1] + " " + cipher_values[270][1] + " " + cipher_values[269][1] + " " + cipher_values[268][1] + " " + cipher_values[267][1] + " " + cipher_values[266][1] + " " + cipher_values[265][1] + " " + cipher_values[264][1]
-    //console.log("Cipher Text: ",encryptedText)
     var cipherTextDisplay = document.getElementById("cipherTextDisplay");
     cipherTextDisplay.textContent = "Cipher Text: " + encryptedText;
 }   
