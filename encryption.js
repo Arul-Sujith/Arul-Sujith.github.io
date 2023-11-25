@@ -162,10 +162,10 @@ function final_transformation(cipher_values, wk_values) {
 function getInputAndRunFunctions() {
     //var userInput = document.getElementById("myInput").value;
     const m_key = document.getElementById('masterKey').value.replace(/ /g, "");
-    console.log("m_key = ",m_key)
+    //console.log("m_key = ",m_key)
 
     const plainText = document.getElementById('plainText').value.replace(/ /g, "");
-    console.log("plainText = ",plainText)
+    //console.log("plainText = ",plainText)
 
     // Call functions with user input
     const δ_values = generateSandDelta();
@@ -184,7 +184,7 @@ function displayCipherText(cipher_values) {
     //console.log("cipher_values = ",JSON.stringify(cipher_values, null, 2))
     //console.log("cipher = ",cipher_values.length)
     const encryptedText = cipher_values[271][1] + " " + cipher_values[270][1] + " " + cipher_values[269][1] + " " + cipher_values[268][1] + " " + cipher_values[267][1] + " " + cipher_values[266][1] + " " + cipher_values[265][1] + " " + cipher_values[264][1]
-    console.log("Cipher Text: ",encryptedText)
+    //console.log("Cipher Text: ",encryptedText)
     var cipherTextDisplay = document.getElementById("cipherTextDisplay");
     cipherTextDisplay.textContent = "Cipher Text: " + encryptedText;
 }   
