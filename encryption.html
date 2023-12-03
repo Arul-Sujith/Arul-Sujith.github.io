@@ -67,11 +67,16 @@
         }
 
         #cipherTextDisplay {
-            margin-top: 20px;
+            margin-top: 25px;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 4px;
+        }   
+
+        select {
+            height: 33px; /* Adjust the height as needed */
         }
+
     </style>
 </head>
 
@@ -81,16 +86,49 @@
         <form onsubmit="return false;">
             <label for="masterKey">Enter Master Key:</label>
             <input type="text" id="masterKey" name="masterKey" required>
-
+        
             <label for="plainText">Enter Plain Text:</label>
             <input type="text" id="plainText" name="plainText" required>
+        
+            <label for="encryptionMode">Encryption Mode:</label>
+            <select id="encryptionMode" name="encryptionMode" style="margin-bottom: 17px;" onchange="handleEncryptionModeChange()" required>
+                <option disabled selected value="">Modes of Operation</option>
+                <option value="option1">Electronic Code Book (ECB)</option>
+                <option value="option2">Cipher Block Chaining (CBC)</option>
+                <option val5ue="option3">Cipher Feedback Mode (CFB)</option>
+                <option value="option4">Output Feedback Mode (OFB)</option>
+                <option value="option5">Counter Mode (CRT)</option>
+            </select>
 
+            <!-- Additional input for IV -->
+            <div id="ivInput" style="display: none;">
+                <label for="iv" style="margin-top: 10px;">Enter the Initial Vector:</label>
+                <input type="text" id="iv" name="iv" required>
+            </div>
+        
             <button type="button" onclick="getInputAndRunFunctions()">Encrypt</button>
         </form>
+        
 
         <div id="cipherTextDisplay"></div>
     </main>
-    <script src="encryption.js"></script>
+    <script>
+        function handleEncryptionModeChange() {
+            var encryptionMode = document.getElementById("encryptionMode").value;
+            var ivInput = document.getElementById("ivInput");
+
+            // Show or hide the IV input based on the selected option
+            if (encryptionMode !== "option1") {
+                ivInput.style.display = "block";
+                document.getElementById("iv").setAttribute("required", "true");
+            } else {
+                ivInput.style.display = "none";
+                document.getElementById("iv").removeAttribute("required");
+            }
+        }
+    </script>
+
+    <script src="enc_option.js"></script>
 </body>
 
 </html>
