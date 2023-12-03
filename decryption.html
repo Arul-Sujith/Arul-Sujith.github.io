@@ -85,10 +85,10 @@
         <h1>HIGHT - Decryption</h1>
         <form onsubmit="return false;">
             <label for="masterKey">Enter Master Key:</label>
-            <input type="text" id="masterKey" name="masterKey" required>
+            <input type="text" id="masterKey" name="masterKey" required placeholder="Hexadecimal">
 
             <label for="plainText">Enter Cipher Text:</label>
-            <input type="text" id="cipherText" name="cipherText" required>
+            <input type="text" id="cipherText" name="cipherText" required placeholder="Hexadecimal">
 
             <label for="decryptionMode">Decryption Mode:</label>
             <select id="decryptionMode" name="decryptionMode" style="margin-bottom: 17px;" onchange="handleDecryptionModeChange()" required>
@@ -103,7 +103,7 @@
             <!-- Additional input for IV -->
             <div id="ivInput" style="display: none;">
                 <label for="iv" style="margin-top: 10px;">Enter the Initial Vector:</label>
-                <input type="text" id="iv" name="iv" required size="40" style="margin-top: 10px;">
+                <input type="text" id="iv" name="iv" required size="40" style="margin-top: 10px;" placeholder="Hexadecimal">
             </div>
         
             <button type="button" onclick="getInputAndRunFunctions()">Decrypt</button>
