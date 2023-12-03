@@ -72,6 +72,11 @@
             border: 1px solid #ccc;
             border-radius: 4px;
         }
+
+        select {
+            height: 33px; /* Adjust the height as needed */
+        }
+
     </style>
 </head>
 
@@ -85,12 +90,44 @@
             <label for="plainText">Enter Cipher Text:</label>
             <input type="text" id="cipherText" name="cipherText" required>
 
+            <label for="decryptionMode">Decryption Mode:</label>
+            <select id="decryptionMode" name="decryptionMode" style="margin-bottom: 17px;" onchange="handleDecryptionModeChange()" required>
+                <option disabled selected value="">Modes of Operation</option>
+                <option value="option1">Electronic Code Book (ECB)</option>
+                <option value="option2">Cipher Block Chaining (CBC)</option>
+                <option value="option3">Cipher Feedback Mode (CFB)</option>
+                <option value="option4">Output Feedback Mode (OFB)</option>
+                <option value="option5">Counter Mode (CRT)</option>
+            </select>
+
+            <!-- Additional input for IV -->
+            <div id="ivInput" style="display: none;">
+                <label for="iv" style="margin-top: 10px;">Enter the Initial Vector:</label>
+                <input type="text" id="iv" name="iv" required size="40" style="margin-top: 10px;">
+            </div>
+        
             <button type="button" onclick="getInputAndRunFunctions()">Decrypt</button>
-        </form>
+        </form> 
 
         <div id="plainTextDisplay"></div>
     </main>
-    <script src="decryption.js"></script>
+    <script>
+        function handleDecryptionModeChange() {
+            var decryptionMode = document.getElementById("decryptionMode").value;
+            var ivInput = document.getElementById("ivInput");
+
+            // Show or hide the IV input based on the selected option
+            if (decryptionMode !== "option1") {
+                ivInput.style.display = "block";
+                document.getElementById("iv").setAttribute("required", "true");
+            } else {
+                ivInput.style.display = "none";
+                document.getElementById("iv").removeAttribute("required");
+            }
+        }
+    </script>
+
+    <script src="dec_option.js"></script>
 </body>
 
 </html>
