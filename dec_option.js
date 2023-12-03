@@ -31,7 +31,7 @@ function getInputAndRunFunctions() {
 
     switch (selectedOption) {   
         case "option1":
-            scriptElement.src = "decryption.js";
+            scriptElement.src = "ECB_decryption.js";
             break;
         case "option2":
             scriptElement.src = "option2.js";
