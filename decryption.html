@@ -85,9 +85,10 @@
         <h1>HIGHT - Decryption</h1>
         <form onsubmit="return false;">
             <label for="masterKey">Enter Master Key:</label>
-            <input type="text" id="masterKey" name="masterKey" required placeholder="Hexadecimal">
+            <input type="text" id="masterKey" name="masterKey" required placeholder="Hexadecimal" oninput="validateMasterKey()">
+            <div id="masterKeyWarning" style="color: red;"></div>
 
-            <label for="plainText">Enter Cipher Text:</label>
+            <label for="cipherText">Enter Cipher Text:</label>
             <input type="text" id="cipherText" name="cipherText" required placeholder="Hexadecimal">
 
             <label for="decryptionMode">Decryption Mode:</label>
@@ -103,7 +104,8 @@
             <!-- Additional input for IV -->
             <div id="ivInput" style="display: none;">
                 <label for="iv" style="margin-top: 10px;">Enter the Initial Vector:</label>
-                <input type="text" id="iv" name="iv" required size="40" style="margin-top: 10px;" placeholder="Hexadecimal">
+                <input type="text" id="iv" name="iv" required size="40" style="margin-top: 10px;" placeholder="Hexadecimal" oninput="validateIV()">
+                <div id="IVWarning" style="color: red;"></div>
             </div>
         
             <button type="button" onclick="getInputAndRunFunctions()">Decrypt</button>
@@ -112,6 +114,36 @@
         <div id="plainTextDisplay"></div>
     </main>
     <script>
+        function validateMasterKey() {
+            var masterKeyInput = document.getElementById("masterKey");
+            var masterKeyWarning = document.getElementById("masterKeyWarning");
+
+            // Remove spaces and get the length
+            var masterKeyWithoutSpaces = masterKeyInput.value.replace(/\s/g, '');
+            var masterKeyLength = masterKeyWithoutSpaces.length;
+
+            if (masterKeyLength > 32) {
+                masterKeyWarning.textContent = "Warning: The Master Key should be 16 bytes.";
+            } else {
+                masterKeyWarning.textContent = "";
+            }
+        }
+
+        function validateIV() {
+            var IVInput = document.getElementById("iv");
+            var IVWarning = document.getElementById("IVWarning");
+
+            // Remove spaces and get the length
+            var IVWithoutSpaces = IVInput.value.replace(/\s/g, '');
+            var IVLength = IVWithoutSpaces.length;
+
+            if (IVLength > 32) {
+                IVWarning.textContent = "Warning: The Initial Vector should be 16 bytes.";
+            } else {
+                IVWarning.textContent = "";
+            }
+        }
+
         function handleDecryptionModeChange() {
             var decryptionMode = document.getElementById("decryptionMode").value;
             var ivInput = document.getElementById("ivInput");
