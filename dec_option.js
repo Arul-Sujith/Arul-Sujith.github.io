@@ -1,12 +1,12 @@
-// Global variables to store masterKey and plainText
+// Global variables to store masterKey and CipherText
 var globalMasterKey;
-var globalPlainText;
+var globalCipherText;
 var globalIV;
 
 function getInputAndRunFunctions() {
     // Get input values
     globalMasterKey = document.getElementById("masterKey").value.replace(/ /g, "");
-    globalPlainText = document.getElementById("cipherText").value.replace(/ /g, "");
+    globalCipherText = document.getElementById("cipherText").value.replace(/ /g, "");
 
     // Check if IV input is visible
     var ivInput = document.getElementById("ivInput");
@@ -14,6 +14,30 @@ function getInputAndRunFunctions() {
         globalIV = document.getElementById("iv").value.replace(/ /g, "");
     }
 
+    // Pad the masterKey to 32 characters
+    globalMasterKey = padToLength(globalMasterKey, 32);
+
+    // Pad the IV to 32 characters
+    globalIV = padToLength(globalIV, 32);
+
+    // Pad the CipherText to at least 16 characters
+    if (globalCipherText.length<16){
+        globalCipherText = padToLength(globalCipherText, 16);
+    }
+
+    function padToLength(value, targetLength) {
+        if (!value) {
+            value = ""; // Set value to an empty string if it's undefined or null
+        }
+        //if (value.length >= targetLength) {
+            //return value.slice(0, targetLength);
+        //} else 
+        {   
+            const padding = '0'.repeat(targetLength - value.length);
+            return padding + value;
+        }
+    }
+    
     // Get selected encryption mode
     var selectedOption = document.getElementById("decryptionMode").value;
 
