@@ -14,6 +14,30 @@ function getInputAndRunFunctions() {
         globalIV = document.getElementById("iv").value.replace(/ /g, "");
     }
 
+    // Pad the masterKey to 32 characters
+    globalMasterKey = padToLength(globalMasterKey, 32);
+
+    // Pad the IV to 32 characters
+    globalIV = padToLength(globalIV, 32);
+
+    // Pad the plainText to at least 16 characters
+    if (globalPlainText.length<16){
+        globalPlainText = padToLength(globalPlainText, 16);
+    }
+
+    function padToLength(value, targetLength) {
+        if (!value) {
+            value = ""; // Set value to an empty string if it's undefined or null
+        }
+        //if (value.length >= targetLength) {
+            //return value.slice(0, targetLength);
+        //} else 
+        {   
+            const padding = '0'.repeat(targetLength - value.length);
+            return padding + value;
+        }
+    }
+    
     // Get selected encryption mode
     var selectedOption = document.getElementById("encryptionMode").value;
 
@@ -29,7 +53,7 @@ function getInputAndRunFunctions() {
         //}
     };
 
-    switch (selectedOption) {
+    switch (selectedOption) {   
         case "option1":
             scriptElement.src = "ECB_encryption.js";
             break;
