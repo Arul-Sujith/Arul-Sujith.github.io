@@ -48,29 +48,16 @@ function generateSandDelta() {
     return delta;
 }
 
-function keys(m_key, plainText) {
-    //const m_key = "ff ee dd cc bb aa 99 88 77 66 55 44 33 22 11 00".replace(/ /g, "");
-    //const plainText = "23ce9f72e543e6d8".replace(/ /g, "");
-    //const m_key = document.getElementById('masterKey').value.replace(/ /g, "");
+function keys(m_key) {
     const byteValues = Array.from({ length: m_key.length / 2 }, (_, i) => m_key.slice(i * 2, (i + 1) * 2));
-    //const plainText = document.getElementById('plainText').value.replace(/ /g, "");
-    const byteValuesPT = Array.from({ length: plainText.length / 2 }, (_, i) => plainText.slice(i * 2, (i + 1) * 2));
     const mkValues = [];
     const wkValues = [];
-    const ptValues = [];
 
     for (let i = 0; i < byteValues.length; i++) {
         const mkName = `MK${i.toString().padStart(2, '0')}`;
         const mkHex = byteValues[i];
         const mkBin = parseInt(mkHex, 16).toString(2).padStart(8, '0');
         mkValues.push([mkName, mkHex, mkBin]);
-    }
-
-    for (let i = 0; i < byteValuesPT.length; i++) {
-        const ptName = `PT${i.toString().padStart(2, '0')}`;
-        const ptHex = byteValuesPT[i];
-        const ptBin = parseInt(ptHex, 16).toString(2).padStart(8, '0');
-        ptValues.push([ptName, ptHex, ptBin]);
     }
 
     for (let i = 0; i < 8; i++) {
@@ -80,7 +67,7 @@ function keys(m_key, plainText) {
         const wkBin = parseInt(wkHex, 16).toString(2).padStart(8, '0');
         wkValues.push([wkName, wkHex, wkBin]);
     }
-    return { mkValues, wkValues, ptValues };
+    return { mkValues, wkValues };
 }
 
 function generateSK(MK, deltaValues) {
@@ -105,6 +92,14 @@ function generateSK(MK, deltaValues) {
         }
     }
     return SK;
+}
+
+function splitCiphertext(cipherText) {
+    const reversedBlocks = [];
+    for (let i = cipherText.length; i > 0; i -= 16) {
+        const block = cipherText.slice(Math.max(0, i - 16), i);
+        reversedBlocks.push(block); }
+    return reversedBlocks.reverse();
 }
 
 function initialTransformation(cipher_values, wkValues) {
@@ -156,54 +151,62 @@ function final_transformation(cipher_values, wk_values) {
     cipher_values = cipher_values.reverse();
     const values = []
     values.push(['Y0,0', x0], ['Y0,1', cipher_values[1][1]], ['Y0,2', x2], ['Y0,3', cipher_values[3][1]], ['Y0,4', x4], ['Y0,5', cipher_values[5][1]], ['Y0,6', x6], ['Y0,7', cipher_values[7][1]]);
-    //const encryptedText = cipher_values[263][1] + " " + cipher_values[262][1] + " " + cipher_values[261][1] + " " + cipher_values[260][1] + " " + cipher_values[259][1] + " " + cipher_values[258][1] + " " + cipher_values[257][1] + " " + cipher_values[256][1]
-    //console.log(encryptedText)
-    //document.getElementById('cipherTextOutput').innerHTML = "<p>Cipher Text: " + encryptedText + "</p>";
     return values;
 }
 
-
-//const δ_values = generateSandDelta();
-//let { mkValues, wkValues, ptValues } = keys();
-//ptValues = ptValues.reverse()
-//wkValues = wkValues.reverse()
-//const MK_Values = mkValues.map(mk => parseInt(mk[1], 16));
-//const SKValues = generateSK(MK_Values, δ_values);
-//const cipherValues1 = final_transformation(ptValues, wkValues);
-//const cipherValues2 = encryption(cipherValues1, SKValues);
-//const cipherValues3 = initialTransformation(cipherValues2, wkValues);
-//console.log("\nCipher Text: ",ptValues[7][1],ptValues[6][1],ptValues[5][1],ptValues[4][1],ptValues[3][1],ptValues[2][1],ptValues[1][1],ptValues[0][1])
-//console.log("Plain Text: ", cipherValues3[7][1],cipherValues3[6][1],cipherValues3[5][1],cipherValues3[4][1],cipherValues3[3][1],cipherValues3[2][1],cipherValues3[1][1],cipherValues3[0][1])
-
-
 function getInputAndRunFunctions() {
-    //var userInput = document.getElementById("myInput").value;
-    //const m_key = document.getElementById('masterKey').value.replace(/ /g, "");
     const m_key = globalMasterKey;
-    //console.log("m_key = ",m_key)
-    //const plainText = document.getElementById('cipherText').value.replace(/ /g, "");
-    const plainText = globalPlainText;
-    //console.log("cipherText = ",plainText)
+    const cipherText = globalCipherText;
     const δ_values = generateSandDelta();
-    let { mkValues, wkValues, ptValues } = keys(m_key, plainText);
-    ptValues = ptValues.reverse()
+    var { mkValues, wkValues } = keys(m_key);
     wkValues = wkValues.reverse()
     const MK_Values = mkValues.map(mk => parseInt(mk[1], 16));
-    const SKValues = generateSK(MK_Values, δ_values);
-    const cipherValues1 = final_transformation(ptValues, wkValues);
-    //console.log("cipherValues1 = ",cipherValues1)
-    const cipherValues2 = encryption(cipherValues1, SKValues);
-    const cipherValues3 = initialTransformation(cipherValues2, wkValues);
-    //console.log(cipherValues3)
-    //... continue with the rest of your code ...
-    displayCipherText(cipherValues3);
+    var SKValues = generateSK(MK_Values, δ_values);
+    
+    const blocks = splitCiphertext(cipherText);
+    const paddedblocks = []
+    for (var i = 0; i < blocks.length; i++) {
+        var block = blocks[i];
+        while (block.length < 16) {
+            block = "0" + block; }
+        paddedblocks.push(block)
+    }
+
+    var ctValues = [];
+    for (var i = 0; i < paddedblocks.length; i++) {
+        var block = paddedblocks[i];
+        const byteValuesCT = Array.from({ length: block.length / 2 }, (_, i) => block.slice(i * 2, (i + 1) * 2));
+
+        const ctValue = []
+        for (let j = 0; j < byteValuesCT.length; j++) {
+            const ctName = `PT${j.toString().padStart(2, '0')}`;
+            const ctHex = byteValuesCT[j];
+            const ctBin = parseInt(ctHex, 16).toString(2).padStart(8, '0');
+            ctValue.push([ctName, ctHex, ctBin]); }
+        ctValues.push(ctValue)
+    }
+
+    const decryptedBlocks = []; 
+    for (var i = 0; i < ctValues.length; i++) {
+        var cipherValues1 = [];
+        var cipherValues2 = [];
+        var cipherValues3 = [];
+        var ctValuesBlock = ctValues[i];
+        
+        ctValuesBlock = ctValuesBlock.reverse();
+        SKValues = (i != 0) ? SKValues.reverse() : SKValues;
+        var cipherValues1 = final_transformation(ctValuesBlock, wkValues);
+        var cipherValues2 = encryption(cipherValues1, SKValues);
+        var cipherValues3 = initialTransformation(cipherValues2, wkValues);
+        const encryptedPart = cipherValues3.slice(0, 8).map(entry => entry[1]).join(" ");
+        decryptedBlocks.push(encryptedPart.split(' ').reverse().join(' '));
+    }
+
+    const decryptedText = decryptedBlocks.join(" ");
+    displayCipherText(decryptedText);
 }
 
-function displayCipherText(cipher_values) {
-    //console.log("cipher_values = ",JSON.stringify(cipher_values, null, 2))
-    //console.log("cipher = ",cipher_values.length)
-    const encryptedText = cipher_values[7][1] + " " + cipher_values[6][1] + " " + cipher_values[5][1] + " " + cipher_values[4][1] + " " + cipher_values[3][1] + " " + cipher_values[2][1] + " " + cipher_values[1][1] + " " + cipher_values[0][1]
-    //console.log("Plain Text: ",encryptedText)
-    var plainTextDisplay = document.getElementById("plainTextDisplay");
-    plainTextDisplay.textContent = "Plain Text: " + encryptedText;
+function displayCipherText(decryptedText) {
+    var cipherTextDisplay = document.getElementById("plainTextDisplay");
+    cipherTextDisplay.textContent = "Plain Text: " + decryptedText;
 }
